@@ -1,0 +1,48 @@
+<html>
+<head>
+<script language="JavaScript">
+function calc(form)
+{
+	step = 0.04;
+	for(i=0;i<255;i++)
+	{
+		f = Compute(1,i*step,0.7);
+		document.getElementById('result').innerHTML = document.getElementById('result').innerHTML + "<br>" + f;
+	}
+}
+function Compute(RA, RB, C) {
+	with(Math) {
+		var Kilo= 1000;
+		var Meg= Kilo*Kilo;
+		var micro= 1/Meg;
+		var Pico= 1/(Meg*Meg);
+		var Nano= 1/(Meg*Kilo);
+		var Precision= 5;
+		var F;
+		
+		var RA= Number(RA)*Kilo;
+		var RB= Number(RB)*Kilo;
+		var C= Number(C)*micro;
+		
+		if(RA!=0 && RB!=0 && C!=0) {
+			F= 1.44/((RA+RB*2)*C);
+			//Duty=  (RA + RB)/((RA + RB*2));
+		}
+		
+		F= F/Kilo;
+		//Duty= Duty*100;
+				
+		freq = F.toPrecision(Precision);
+		//form.Duty.value= Duty.toPrecision(Precision);		
+	}
+	return freq;
+}
+</script>
+</head>
+<body>
+<form id="myform">
+	<input type="button" onClick="calc(document.getElementById('myform'));">
+	<span id="result">test</span>
+</form>
+</body>
+</html>

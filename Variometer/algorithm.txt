@@ -1,0 +1,8 @@
+climb threshold = 0.1 m/s (>= beeping climb tone starting at 800Hz, with changing pitch)
+near thermal threshold = -0.5 (>= beeping near thermal tone, 700Hz with fixed pitch)
+sink tone threshold = -1.0 (>= no tone)
+sink alarm threshold = -5.0 (>= continuous sink tone starting at 600Hz)
+sink alarm = < sink alarm threshold (continuous tone at 350Hz)
+
+
+
