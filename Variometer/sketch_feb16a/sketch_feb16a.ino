@@ -1,10 +1,10 @@
 #include <Timer.h>
 #include <SPI.h>
-#include "PDQ_GFX.h"
-#include "PDQ_ILI9341_config.h"
-#include "PDQ_ILI9341.h"
-//#include <Adafruit_ILI9341.h>
-//#include <Adafruit_GFX.h>
+//#include "PDQ_GFX.h"
+//#include "PDQ_ILI9341_config.h"
+//#include "PDQ_ILI9341.h"
+#include <Adafruit_ILI9341.h>
+#include <Adafruit_GFX.h>
 //#include <gfxfont.h>
 #include <MS5611.h>
 
@@ -19,8 +19,6 @@
 // sink alarm = < sink alarm threshold (continuous tone at 350Hz)
 // -------------------------------------------------------------------
 
-// vSpeed calculation variables
-float  vSpeedMeasurePeriod = 1000;       // In milliseconds
 
 // Climb variables
 float climbThreshold = 0.1;               // Climb threshold in meter/seconds
@@ -45,13 +43,28 @@ float sinkAlarmThreshold = -5.0;          // Sink alarm threshold in santimeter/
 float sinkAlarmToneFreq = 350;            // Sink alarm tone frequency in herz
 float sinkAlarmPeriodFreq = 5;            // Sink alarm tone frequency in herz
 
+// vSpeed calculation variables
+float  vSpeedMeasurePeriod = 300;       // In milliseconds
+
+// -------------------------------------------------------------------
+// Kalman filter initial variables
+// -------------------------------------------------------------------
+float varianceMeasurment = 0.15;   // variance determined using excel and reading samples of raw sensor data (sashualo gadaxra)
+float varianceProcess = 0.0001;      // larger value - more rapid change but more noise, less velua - slow change according to process measurments but less noise
+float Pc = 0.0;
+float G = 0.0;
+float P = 1.0;
+float Xp = 0.0;
+float Zp = 0.0;
+float Xe = 0.0;
+
 // -------------------------------------------------------------------
 // Hardware settings
 // -------------------------------------------------------------------
 int timerVin = 2;                         // V input for timer
 int tonePotenciometerSelect = 3;          // Tone potentiometer select pin
 int periodPotenciometerSelect = 4;        // Period potentiometer select pin
-int periodVin = 7;                // Period potentiometer output pin (for switching period timer on/off)
+int periodVin = 7;                        // Period potentiometer output pin (for switching period timer on/off)
 int toneRA = 1000;                        // RA setting for tone(ohm)
 float toneCapacitance = 0.23;             // Tone capacitor capacitance in mF
 int periodRA = 1000;                      // RA setting for period(ohm)
@@ -67,8 +80,8 @@ int screenDataCommand = 6;
 #define numberOfMinutes(_time_) ((_time_ / SECS_PER_MIN) % SECS_PER_MIN) 
 #define numberOfHours(_time_) (( _time_% SECS_PER_DAY) / SECS_PER_HOUR)
 #define elapsedDays(_time_) ( _time_ / SECS_PER_DAY)  
-//Adafruit_ILI9341 tft = Adafruit_ILI9341(screenSelect, screenDataCommand);
-PDQ_ILI9341 tft;      // PDQ: create LCD object (using pins in "PDQ_ST7735_config.h")
+Adafruit_ILI9341 tft = Adafruit_ILI9341(screenSelect, screenDataCommand);
+//PDQ_ILI9341 tft;      // PDQ: create LCD object (using pins in "PDQ_ST7735_config.h")
 MS5611 ms5611;
 float toneFrequency = 0;
 float periodFrequency = 0;
@@ -76,8 +89,8 @@ float periodFrequency = 0;
 int   numberOfAltitudeSums = 0;
 float averageAltitudesSum = 0;
 long  startTimeMeasure = 0;
-float vSpeed = 0;
 float lastAverageAbsoluteAltitude = 0;
+float absoluteAltitude = 0;
 bool  vSpeedMeasurementInProgress = false;
 char  formatedTime[8];
 Timer clockTimer;
@@ -123,15 +136,11 @@ void setup() {
   // -------------------------------------------------------------------
   digitalWrite(periodVin, HIGH);
   digitalWrite(timerVin, HIGH);
-  setTone(560); delay(20);
-  digitalWrite(timerVin, LOW); delay(20); digitalWrite(timerVin, HIGH);
-  setTone(832); delay(20);
-  digitalWrite(timerVin, LOW); delay(20); digitalWrite(timerVin, HIGH);
-  setTone(560); delay(20);
-  digitalWrite(timerVin, LOW); delay(20); digitalWrite(timerVin, HIGH);
-  setTone(832); delay(20);
-  digitalWrite(timerVin, LOW); delay(20); digitalWrite(timerVin, HIGH);
-  setTone(560); delay(20);
+  setTone(560); delay(50);
+  setTone(832); delay(50);
+  setTone(560); delay(50);
+  setTone(832); delay(50);
+  setTone(560); delay(50);
   digitalWrite(periodVin, LOW);
   digitalWrite(timerVin, LOW);
 
@@ -145,7 +154,7 @@ void setup() {
   // Register timer events
   // -------------------------------------------------------------------
   clockTimer.every(1000, drawClock);
-  vSpeedTimer.every(50, measureVSpeed);
+  vSpeedTimer.every(10, measureVSpeed);
 }
 
 // the loop function runs over and over again forever
@@ -214,23 +223,21 @@ float getAbsoluteAltitude()
 }
 
 
-
 // -------------------------------------------------------------------
 // Set appropriate beep
 // -------------------------------------------------------------------
-float setBeep(float vSpeed)
+void setBeep(float verticalSpeed)
 {
-
   // climb threshold = 0.1 m/s (>= beeping climb tone starting at 800Hz, with changing pitch)
-  if (vSpeed >= climbThreshold)
+  if (verticalSpeed >= climbThreshold)
   {
     digitalWrite(timerVin, HIGH);
     digitalWrite(periodVin, LOW);
-    setTone(climbToneBaseFreq + vSpeed * 10 * climbToneFreqStep);
-    setPeriod(climbPeriodBaseFreq + vSpeed * 10 * climbPeriodFreqStep);
+    setTone(climbToneBaseFreq + verticalSpeed * 10 * climbToneFreqStep);
+    setPeriod(climbPeriodBaseFreq + verticalSpeed * 10 * climbPeriodFreqStep);
   }
   // near thermal threshold = -0.5 (>= beeping near thermal tone, 700Hz with fixed pitch)
-  else if ((vSpeed >= nearThermalThreshold) && (vSpeed < climbThreshold))
+  else if ((verticalSpeed >= nearThermalThreshold) && (verticalSpeed < climbThreshold))
   {
     digitalWrite(timerVin, HIGH);
     digitalWrite(periodVin, LOW);
@@ -238,21 +245,21 @@ float setBeep(float vSpeed)
     setPeriod(nearThermalPeriodFreq);
   }
   // sink tone threshold = -1.0 (>= no tone)
-  else if ((vSpeed >= sinkThreshold) && (vSpeed < nearThermalThreshold))
+  else if ((verticalSpeed >= sinkThreshold) && (verticalSpeed < nearThermalThreshold))
   {
     digitalWrite(timerVin, LOW);
     digitalWrite(periodVin, LOW);
   }
   // sink alarm threshold = -5.0 (>= continuous sink tone starting at 600Hz)
-  else if ((vSpeed >= sinkAlarmThreshold) && (vSpeed < sinkThreshold))
+  else if ((verticalSpeed >= sinkAlarmThreshold) && (verticalSpeed < sinkThreshold))
   {
     digitalWrite(timerVin, HIGH);
     digitalWrite(periodVin, HIGH);
-    setTone(sinkToneBaseFreq + vSpeed * 10 * sinkToneFreqStep);
+    setTone(sinkToneBaseFreq + verticalSpeed * 10 * sinkToneFreqStep);
     //setPeriod(sinkPeriodFreq);
   }
   // sink alarm = < sink alarm threshold (continuous tone at 350Hz)
-  else if (vSpeed < sinkAlarmThreshold)
+  else if (verticalSpeed < sinkAlarmThreshold)
   {
     digitalWrite(timerVin, HIGH);
     digitalWrite(periodVin, LOW);
@@ -288,34 +295,38 @@ void measureVSpeed()
   if(!vSpeedMeasurementInProgress)
   {
     vSpeedMeasurementInProgress = true;
-    averageAltitudesSum += getAbsoluteAltitude();
+    absoluteAltitude = filterKalman(getAbsoluteAltitude());
+    averageAltitudesSum += absoluteAltitude;
     numberOfAltitudeSums++;
-    if(millis()-startTimeMeasure >= vSpeedMeasurePeriod || numberOfAltitudeSums > 100)
+    if(millis()-startTimeMeasure >= vSpeedMeasurePeriod || numberOfAltitudeSums > 1000)
     {
       int measuringTime = millis()-startTimeMeasure;
       float averageAbsoluteAltitude = averageAltitudesSum / numberOfAltitudeSums;
-      vSpeed = (averageAbsoluteAltitude - lastAverageAbsoluteAltitude) * 1000 / measuringTime; //Unit - Meter/Second
+      float vSpeed = (averageAbsoluteAltitude - lastAverageAbsoluteAltitude) * 1000 / measuringTime; //Unit - Meter/Second
       vSpeed = round(vSpeed * 10.0) / 10.0; //rounding to 1 decimal digit
       lastAverageAbsoluteAltitude = averageAbsoluteAltitude;
       startTimeMeasure = millis();
       averageAltitudesSum = 0;
       numberOfAltitudeSums = 0;
-
-      //-----------------------------------
-      // Set Beep
-      //-----------------------------------
-      //setBeep(vSpeed);
-
-      //-----------------------------------
-      // Update Bar
-      //-----------------------------------
-      //updateDisplayBar(vSpeed);
-
-      //-----------------------------------
-      // Update Display vSpeed
-      //-----------------------------------
-      updateDisplayVSpeed(vSpeed);
-
+      
+      // After initialization finished     
+      if(millis()>3000)
+      {
+        //-----------------------------------
+        // Set Beep
+        //-----------------------------------
+        setBeep(vSpeed);
+        
+        //-----------------------------------
+        // Update Bar
+        //-----------------------------------
+        //updateDisplayBar(vSpeed);
+  
+        //-----------------------------------
+        // Update Display vSpeed
+        //-----------------------------------
+        updateDisplayVSpeed(vSpeed);
+      }
     }
     vSpeedMeasurementInProgress = false;  
   }
@@ -335,13 +346,26 @@ void updateDisplayTimer(char* formatedTime)
 // -------------------------------------------------------------------
 // Update display vSpeed
 // -------------------------------------------------------------------
-void updateDisplayVSpeed(float vSpeed)
+void updateDisplayVSpeed(float verticalSpeed)
 {
   tft.setCursor(60, 150);
   tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
   tft.setTextSize(4);
-  if(vSpeed>=0) 
+  if(verticalSpeed>=0) 
     tft.print(' ');
-  tft.print(vSpeed);
+  tft.print(verticalSpeed);
 }
 
+// -------------------------------------------------------------------
+// Kalman filter
+// -------------------------------------------------------------------
+float filterKalman(float sensorData)
+{
+  Pc = P + varianceProcess;
+  G = Pc/(Pc + varianceMeasurment);    // kalman gain
+  P = (1-G)*Pc;
+  Xp = Xe;
+  Zp = Xp;
+  Xe = G*(sensorData-Zp)+Xp;   // the kalman estimate of the sensor vSpeed
+  return Xe;
+}
