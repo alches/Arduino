@@ -50,7 +50,7 @@ float  vSpeedMeasurePeriod = 300;       // In milliseconds
 // Kalman filter initial variables
 // -------------------------------------------------------------------
 float varianceMeasurment = 0.15;   // variance determined using excel and reading samples of raw sensor data (sashualo gadaxra)
-float varianceProcess = 0.0001;      // larger value - more rapid change but more noise, less velua - slow change according to process measurments but less noise
+float varianceProcess = 0.0005;      // larger value - more rapid change but more noise, less velua - slow change according to process measurments but less noise
 float Pc = 0.0;
 float G = 0.0;
 float P = 1.0;
@@ -155,6 +155,11 @@ void setup() {
   // -------------------------------------------------------------------
   clockTimer.every(1000, drawClock);
   vSpeedTimer.every(10, measureVSpeed);
+
+  // -------------------------------------------------------------------
+  // Initialize static graphics
+  // -------------------------------------------------------------------
+  drawStaticGraphics();
 }
 
 // the loop function runs over and over again forever
@@ -163,7 +168,16 @@ void loop() {
   // Tick timers
   // -------------------------------------------------------------------  
   clockTimer.update();
-  vSpeedTimer.update();  
+  //vSpeedTimer.update();
+
+  //for (int i=1;i<50;i++)
+  {
+     updateDisplayBar(10.0, 0.0);
+     updateDisplayBar(-10.0, 10.0);
+     updateDisplayBar(0.0, -10.0);
+  }
+  
+  
 }
 
 // -------------------------------------------------------------------
@@ -291,26 +305,34 @@ void drawClock()
 // Measure vSpeed
 // -------------------------------------------------------------------
 void measureVSpeed()
-{
+{  
   if(!vSpeedMeasurementInProgress)
   {
     vSpeedMeasurementInProgress = true;
-    absoluteAltitude = filterKalman(getAbsoluteAltitude());
-    averageAltitudesSum += absoluteAltitude;
+    
+    // Set all pressure sensor data variables after measurment
+    measurePressureSensordata();
+
+    // Calculate vertical speed
+    averageAltitudesSum += filterKalman(absoluteAltitude);
     numberOfAltitudeSums++;
-    if(millis()-startTimeMeasure >= vSpeedMeasurePeriod || numberOfAltitudeSums > 1000)
+    if(millis()-startTimeMeasure >= vSpeedMeasurePeriod || numberOfAltitudeSums >= 100)
     {
-      int measuringTime = millis()-startTimeMeasure;
       float averageAbsoluteAltitude = averageAltitudesSum / numberOfAltitudeSums;
-      float vSpeed = (averageAbsoluteAltitude - lastAverageAbsoluteAltitude) * 1000 / measuringTime; //Unit - Meter/Second
-      vSpeed = round(vSpeed * 10.0) / 10.0; //rounding to 1 decimal digit
+      float vSpeed = (averageAbsoluteAltitude - lastAverageAbsoluteAltitude) * 1000 / (millis()-startTimeMeasure); //Unit - Meter/Second
       lastAverageAbsoluteAltitude = averageAbsoluteAltitude;
       startTimeMeasure = millis();
       averageAltitudesSum = 0;
       numberOfAltitudeSums = 0;
-      
-      // After initialization finished     
-      if(millis()>3000)
+      vSpeed = round(vSpeed * 10.0) / 10.0; //rounding to 1 decimal digit
+
+      // vSpeed limit control
+      if(vSpeed>10)
+        vSpeed = 10;
+      if(vSpeed<-10)
+        vSpeed = -10;
+
+      if(startTimeMeasure > 3000)
       {
         //-----------------------------------
         // Set Beep
@@ -333,11 +355,135 @@ void measureVSpeed()
 }
 
 // -------------------------------------------------------------------
+// Update display vSpeed
+// -------------------------------------------------------------------
+void updateDisplayBar(float verticalSpeed, float lastVerticalSpeed)
+{
+  if(verticalSpeed - lastVerticalSpeed == 0)
+    return;
+      
+  uint16_t rectColor = 0;
+  int startY = 0;
+  int endY = 0;
+  int drawDirection = 0;
+  int scrW = 240;
+  int scrH = 320;
+  int border = 5;
+  int zeroX = border+34;
+  int zeroY = scrH / 2;
+  int j=0;
+  
+  // Up
+  if(verticalSpeed - lastVerticalSpeed > 0)
+  {
+    startY = lastVerticalSpeed * 10;
+    endY = verticalSpeed * 10;
+    drawDirection = -1;
+    for(int i = startY; i<=endY; i++)
+    {
+      if(i<=50 and i>=-50)
+      {
+        if(i>0)
+          rectColor = ILI9341_BLACK;
+        else 
+          rectColor = ILI9341_WHITE;
+        tft.drawRect(zeroX,zeroY + drawDirection*i*3-2, 50, 2, rectColor);
+      }
+      else
+      {
+        if(i>0) 
+          j = i - 50;
+        else    
+          j = i + 50;
+        if(j>0)
+          rectColor = ILI9341_WHITE;
+        else 
+          rectColor = 0xB000;
+        tft.drawRect(zeroX,zeroY + drawDirection*j*3-2, 50, 2, rectColor);
+      }
+      delay(10);
+    }
+  }
+  // Down
+  else
+  {
+    startY = lastVerticalSpeed * 10;
+    endY = verticalSpeed * 10;
+    drawDirection = 1;
+    for(int i = startY; i>=endY; i--)
+    {
+      if(i<=50 and i>=-50)
+      {
+        if(i<0)
+          rectColor = 0xB000;
+        else 
+          rectColor = ILI9341_WHITE;
+        tft.drawRect(zeroX,zeroY - drawDirection*i*3-2, 50, 2, rectColor);
+      }
+      else
+      {
+        if(i>0) 
+          j = i - 50;
+        else    
+          j = i + 50;
+        if(j<0)
+          rectColor = ILI9341_WHITE;
+        else 
+          rectColor = ILI9341_BLACK;
+        tft.drawRect(zeroX,zeroY - drawDirection*j*3-2, 50, 2, rectColor);
+      }
+      delay(10);
+    }
+  }
+ 
+}
+
+// -------------------------------------------------------------------
+// Draw static objects
+// -------------------------------------------------------------------
+void drawStaticGraphics()
+{
+  uint16_t rectColor = 0;
+  int scrW = 240;
+  int scrH = 320;
+  int border = 5;
+  int zeroX = border+27;
+  int zeroY = scrH / 2;
+  int mark = 2;
+  rectColor = ILI9341_BLACK;
+  for(int i = -50; i<= 50; i++)
+  {
+    if(i%10==0)
+    {
+      tft.setCursor(border+13, zeroY + i*3-7);
+      tft.setTextColor(0x6D60, ILI9341_WHITE);
+      tft.setTextSize(2);
+      tft.print(abs(i/10));
+      if(i/10 != 0)
+      {
+        if(abs(i/10)==5)
+          tft.setCursor(border, zeroY + i*3-3);
+        else
+          tft.setCursor(border+6, zeroY + i*3-3);
+        tft.setTextColor(0xB000, ILI9341_WHITE);
+        tft.setTextSize(1);
+        tft.print(abs(i/10)+5);   
+      }
+      mark = 6;
+    }
+    else 
+      mark = 2;
+    tft.drawRect(zeroX,zeroY + i*3-2,mark, 2, rectColor);
+  }
+}
+
+
+// -------------------------------------------------------------------
 // Update display timer
 // -------------------------------------------------------------------
 void updateDisplayTimer(char* formatedTime)
 {
-  tft.setCursor(75, 20);
+  tft.setCursor(95, 10);
   tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
   tft.setTextSize(2);
   tft.print(formatedTime);
@@ -366,6 +512,14 @@ float filterKalman(float sensorData)
   P = (1-G)*Pc;
   Xp = Xe;
   Zp = Xp;
-  Xe = G*(sensorData-Zp)+Xp;   // the kalman estimate of the sensor vSpeed
+  Xe = G*(sensorData-Zp)+Xp;   // the kalman estimate of the sensor data
   return Xe;
+}
+
+// -------------------------------------------------------------------
+// Measure pressure sensor data
+// -------------------------------------------------------------------
+void measurePressureSensordata()
+{
+  absoluteAltitude = getAbsoluteAltitude();
 }
