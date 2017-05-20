@@ -1,3 +1,4 @@
+#include <Math.h>
 #include <Timer.h>
 #include <SPI.h>
 //#include "PDQ_GFX.h"
@@ -5,9 +6,9 @@
 //#include "PDQ_ILI9341.h"
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_GFX.h>
-//#include <gfxfont.h>
 #include <MS5611.h>
-
+#include <MAX17043.h>
+#include "Wire.h"
 
 // -------------------------------------------------------------------
 // Variometer configuration settings
@@ -83,6 +84,7 @@ int screenDataCommand = 6;
 Adafruit_ILI9341 tft = Adafruit_ILI9341(screenSelect, screenDataCommand);
 //PDQ_ILI9341 tft;      // PDQ: create LCD object (using pins in "PDQ_ST7735_config.h")
 MS5611 ms5611;
+MAX17043 batteryMonitor;
 float toneFrequency = 0;
 float periodFrequency = 0;
 
@@ -90,11 +92,19 @@ int   numberOfAltitudeSums = 0;
 float averageAltitudesSum = 0;
 long  startTimeMeasure = 0;
 float lastAverageAbsoluteAltitude = 0;
+float lastVSpeed = 0;
 float absoluteAltitude = 0;
+float temperature = 0;
 bool  vSpeedMeasurementInProgress = false;
 char  formatedTime[8];
 Timer clockTimer;
 Timer vSpeedTimer;
+Timer batteryTimer;
+//Screen variables
+int scrW = 240;
+int scrH = 320;
+int scrBorder = 5;
+
 
 void setup() {
   // -------------------------------------------------------------------
@@ -117,6 +127,7 @@ void setup() {
   // Low power: MS5611_LOW_POWER
   // Ultra low power: MS5611_ULTRA_LOW_POWER
   // -------------------------------------------------------------------
+  Wire.begin(); 
   Serial.begin(9600);
   while (!ms5611.begin(MS5611_ULTRA_HIGH_RES))
   {
@@ -155,6 +166,13 @@ void setup() {
   // -------------------------------------------------------------------
   clockTimer.every(1000, drawClock);
   vSpeedTimer.every(10, measureVSpeed);
+  batteryTimer.every(1000, drawBattery);
+
+  // -------------------------------------------------------------------
+  // Battery monitor reset,hardware not implemented..
+  // -------------------------------------------------------------------
+  //batteryMonitor.reset();
+  //batteryMonitor.quickStart();
 
   // -------------------------------------------------------------------
   // Initialize static graphics
@@ -168,16 +186,14 @@ void loop() {
   // Tick timers
   // -------------------------------------------------------------------  
   clockTimer.update();
-  //vSpeedTimer.update();
+  batteryTimer.update();
+  vSpeedTimer.update();
 
-  //for (int i=1;i<50;i++)
-  {
+/*
      updateDisplayBar(10.0, 0.0);
      updateDisplayBar(-10.0, 10.0);
      updateDisplayBar(0.0, -10.0);
-  }
-  
-  
+  */
 }
 
 // -------------------------------------------------------------------
@@ -236,6 +252,13 @@ float getAbsoluteAltitude()
   return ms5611.getAltitude(ms5611.readPressure(true));
 }
 
+// -------------------------------------------------------------------
+// Calculate current temperature
+// -------------------------------------------------------------------
+float getTemperature()
+{
+  return ms5611.readTemperature(true);
+}
 
 // -------------------------------------------------------------------
 // Set appropriate beep
@@ -331,7 +354,7 @@ void measureVSpeed()
         vSpeed = 10;
       if(vSpeed<-10)
         vSpeed = -10;
-
+      
       if(startTimeMeasure > 3000)
       {
         //-----------------------------------
@@ -342,13 +365,26 @@ void measureVSpeed()
         //-----------------------------------
         // Update Bar
         //-----------------------------------
-        //updateDisplayBar(vSpeed);
+        updateDisplayBar(vSpeed, lastVSpeed);
   
         //-----------------------------------
         // Update Display vSpeed
         //-----------------------------------
         updateDisplayVSpeed(vSpeed);
+
+        //-----------------------------------
+        // Update Display Altitude
+        //-----------------------------------
+        updateDisplayAltitude(averageAbsoluteAltitude);
+
+        //-----------------------------------
+        // Update Display Temperature
+        //-----------------------------------
+        updateDisplayTemperature(temperature);
+
       }
+
+      lastVSpeed = vSpeed;
     }
     vSpeedMeasurementInProgress = false;  
   }
@@ -366,10 +402,7 @@ void updateDisplayBar(float verticalSpeed, float lastVerticalSpeed)
   int startY = 0;
   int endY = 0;
   int drawDirection = 0;
-  int scrW = 240;
-  int scrH = 320;
-  int border = 5;
-  int zeroX = border+34;
+  int zeroX = scrBorder+34;
   int zeroY = scrH / 2;
   int j=0;
   
@@ -443,11 +476,12 @@ void updateDisplayBar(float verticalSpeed, float lastVerticalSpeed)
 // -------------------------------------------------------------------
 void drawStaticGraphics()
 {
+  // draw bar
   uint16_t rectColor = 0;
   int scrW = 240;
   int scrH = 320;
-  int border = 5;
-  int zeroX = border+27;
+  int scrscrBorder = 5;
+  int zeroX = scrBorder+27;
   int zeroY = scrH / 2;
   int mark = 2;
   rectColor = ILI9341_BLACK;
@@ -455,16 +489,16 @@ void drawStaticGraphics()
   {
     if(i%10==0)
     {
-      tft.setCursor(border+13, zeroY + i*3-7);
+      tft.setCursor(scrBorder+13, zeroY + i*3-7);
       tft.setTextColor(0x6D60, ILI9341_WHITE);
       tft.setTextSize(2);
       tft.print(abs(i/10));
       if(i/10 != 0)
       {
         if(abs(i/10)==5)
-          tft.setCursor(border, zeroY + i*3-3);
+          tft.setCursor(scrBorder, zeroY + i*3-3);
         else
-          tft.setCursor(border+6, zeroY + i*3-3);
+          tft.setCursor(scrBorder+6, zeroY + i*3-3);
         tft.setTextColor(0xB000, ILI9341_WHITE);
         tft.setTextSize(1);
         tft.print(abs(i/10)+5);   
@@ -474,7 +508,62 @@ void drawStaticGraphics()
     else 
       mark = 2;
     tft.drawRect(zeroX,zeroY + i*3-2,mark, 2, rectColor);
+    tft.drawRect(zeroX+58,zeroY + i*3-2,1, 1, 0x8410);
   }
+
+  // draw battery and temperature section
+  tft.drawLine(95, scrBorder+17, 238, scrBorder+17, 0xC618);
+  tft.drawLine(167, 4, 167, scrBorder+14, 0xC618);
+  tft.drawLine(95, scrBorder+59, 238, scrBorder+59, 0xC618);
+  tft.drawLine(95, scrBorder+120, 238, scrBorder+120, 0xC618);
+  tft.drawLine(95, scrBorder+193, 238, scrBorder+193, 0xC618);
+
+  tft.drawRect(208, scrBorder, 25, 12, 0x2945 );
+  tft.drawRect(209, scrBorder+1, 23, 10, 0x8C51 );
+  tft.drawRect(233, scrBorder+3, 2, 6, 0x2945 );
+  // replaced with dynamic content
+  tft.setCursor(182, scrBorder+3);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(1);
+  tft.print("100%");   
+  // replaced with dynamic content
+
+  // draw temperature
+  tft.setCursor(150, scrBorder-2);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(1);
+  tft.print("o");
+  tft.setCursor(155, scrBorder+6);
+  tft.print("C");
+
+  // Draw flight time
+  tft.setCursor(146, scrBorder+49);
+  tft.setTextColor(0x2945, ILI9341_WHITE);
+  tft.setTextSize(1);
+  tft.print("Flight duration");
+
+  // Draw MSL Altitude
+  tft.setCursor(153, scrBorder+110);
+  tft.setTextColor(0x2945, ILI9341_WHITE);
+  tft.setTextSize(1);
+  tft.print("Altitude (MSL)");
+  tft.setCursor(207, scrBorder+82);
+  tft.setTextColor(0x2945, ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.print("m");
+
+  // Draw MSL Altitude
+  tft.setCursor(193, scrBorder+183);
+  tft.setTextColor(0x2945, ILI9341_WHITE);
+  tft.setTextSize(1);
+  tft.print("V-speed");
+  tft.setCursor(207, scrBorder+154);
+  tft.setTextColor(0x2945, ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.print("m");
+  tft.setCursor(224, scrBorder+154);
+  tft.print("s");
+  tft.drawLine(221, scrBorder+158, 219, scrBorder+167, ILI9341_BLACK);
 }
 
 
@@ -483,7 +572,7 @@ void drawStaticGraphics()
 // -------------------------------------------------------------------
 void updateDisplayTimer(char* formatedTime)
 {
-  tft.setCursor(95, 10);
+  tft.setCursor(120, scrBorder+27);
   tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
   tft.setTextSize(2);
   tft.print(formatedTime);
@@ -494,13 +583,65 @@ void updateDisplayTimer(char* formatedTime)
 // -------------------------------------------------------------------
 void updateDisplayVSpeed(float verticalSpeed)
 {
-  tft.setCursor(60, 150);
+  tft.setCursor(109, 145);
   tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
   tft.setTextSize(4);
   if(verticalSpeed>=0) 
     tft.print(' ');
-  tft.print(verticalSpeed);
+  tft.print(verticalSpeed,1);
 }
+
+// -------------------------------------------------------------------
+// Update display Altitude
+// -------------------------------------------------------------------
+void updateDisplayAltitude(float absoluteAltitude)
+{
+  int absAltRounded = round(absoluteAltitude);
+  int xPosition = 18*((int)log10(absAltRounded)+1);
+  tft.setCursor(205 - xPosition, 80);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.print(absAltRounded);
+}
+
+// -------------------------------------------------------------------
+// Update display temperature
+// -------------------------------------------------------------------
+void updateDisplayTemperature(float temperature)
+{
+  tft.setCursor(100, scrBorder);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.print(temperature,1);
+}
+
+// -------------------------------------------------------------------
+// Draw battery
+// -------------------------------------------------------------------
+void drawBattery()
+{
+  /*tft.setCursor(95, 50);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.print(batteryMonitor.getVCell());
+
+  tft.setCursor(95, 100);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(2);
+  tft.print(batteryMonitor.getSoC());*/
+ 
+ /* float cellVoltage = batteryMonitor.getVCell();
+  Serial.print("Voltage:\t\t");
+  Serial.print(cellVoltage, 4);
+  Serial.println("V");
+
+  float stateOfCharge = batteryMonitor.getSoC();
+  Serial.print("State of charge:\t");
+  Serial.print(stateOfCharge);
+  Serial.println("%");*/
+
+}
+
 
 // -------------------------------------------------------------------
 // Kalman filter
@@ -522,4 +663,16 @@ float filterKalman(float sensorData)
 void measurePressureSensordata()
 {
   absoluteAltitude = getAbsoluteAltitude();
+  temperature = getTemperature();
 }
+
+// -------------------------------------------------------------------
+// Diagnostics
+// -------------------------------------------------------------------
+int freeRam () 
+{
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
+
