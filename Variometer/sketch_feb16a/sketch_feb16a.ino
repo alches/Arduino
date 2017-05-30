@@ -171,8 +171,8 @@ void setup() {
   // -------------------------------------------------------------------
   // Battery monitor reset,hardware not implemented..
   // -------------------------------------------------------------------
-  //batteryMonitor.reset();
-  //batteryMonitor.quickStart();
+  batteryMonitor.reset();
+  batteryMonitor.quickStart();
 
   // -------------------------------------------------------------------
   // Initialize static graphics
@@ -480,7 +480,6 @@ void drawStaticGraphics()
   uint16_t rectColor = 0;
   int scrW = 240;
   int scrH = 320;
-  int scrscrBorder = 5;
   int zeroX = scrBorder+27;
   int zeroY = scrH / 2;
   int mark = 2;
@@ -521,12 +520,6 @@ void drawStaticGraphics()
   tft.drawRect(208, scrBorder, 25, 12, 0x2945 );
   tft.drawRect(209, scrBorder+1, 23, 10, 0x8C51 );
   tft.drawRect(233, scrBorder+3, 2, 6, 0x2945 );
-  // replaced with dynamic content
-  tft.setCursor(182, scrBorder+3);
-  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-  tft.setTextSize(1);
-  tft.print("100%");   
-  // replaced with dynamic content
 
   // draw temperature
   tft.setCursor(150, scrBorder-2);
@@ -620,26 +613,26 @@ void updateDisplayTemperature(float temperature)
 // -------------------------------------------------------------------
 void drawBattery()
 {
-  /*tft.setCursor(95, 50);
-  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-  tft.setTextSize(2);
-  tft.print(batteryMonitor.getVCell());
+  int charge = round(batteryMonitor.getSoC());
+  if(charge >= 0 && charge <= 100)
+  {
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(1);
 
-  tft.setCursor(95, 100);
-  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-  tft.setTextSize(2);
-  tft.print(batteryMonitor.getSoC());*/
- 
- /* float cellVoltage = batteryMonitor.getVCell();
-  Serial.print("Voltage:\t\t");
-  Serial.print(cellVoltage, 4);
-  Serial.println("V");
-
-  float stateOfCharge = batteryMonitor.getSoC();
-  Serial.print("State of charge:\t");
-  Serial.print(stateOfCharge);
-  Serial.println("%");*/
-
+    int xPosition = 5*((int)log10(charge)+1);
+    tft.setCursor(196 - xPosition, scrBorder+3);
+    tft.print(charge);
+    tft.print("%");   
+    
+    int barCount = charge / 20 + 1; 
+    if(barCount>5) 
+      barCount=5;
+    for(int i=0; i<barCount; i++)
+    {
+      tft.fillRect(211 + i*4, scrBorder + 3, 3, 6, 0x2945 );        
+    }
+    /* დასამატებელია ზედა ბარების წაშლა */
+  }
 }
 
 
