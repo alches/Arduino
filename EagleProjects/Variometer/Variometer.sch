@@ -13817,7 +13817,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="C2" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-US" device="050-025X075" package3d_urn="urn:adsk.eagle:package:26160/1" value="0.23uF"/>
 <part name="Q1" library="transistors" deviceset="2N700*" device="_TO92" technology="0" value="2N7000"/>
-<part name="GND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U$1" library="Arduino-clone" deviceset="NANO" device=""/>
 <part name="C3" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="CPOL-US" device="E2.5-7" package3d_urn="urn:adsk.eagle:package:25830/1" value="100uF"/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -13825,7 +13824,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <part name="C4" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="C-US" device="025-024X044" package3d_urn="urn:adsk.eagle:package:26149/1" value="10nF"/>
 <part name="GND5" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R3" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0805" value="1k"/>
-<part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="TONE" library="Potentiometer" deviceset="MCP41010-X/P" device="" value="MCP41010-X/P"/>
 <part name="PERIOD" library="Potentiometer" deviceset="MCP41010-X/P" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -13863,13 +13861,13 @@ diameter 5 mm, grid 2.54 mm</description>
 <part name="CHRGR2" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X2" device="" package3d_urn="urn:adsk.eagle:package:22435/2"/>
 <part name="CHRGR3" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="CHRGR4" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
-<part name="BUZZER" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X2" device="" package3d_urn="urn:adsk.eagle:package:22435/2"/>
 <part name="BATTERY_BTN" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="" package3d_urn="urn:adsk.eagle:package:22458/2"/>
 <part name="BATTERY" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X2" device="" package3d_urn="urn:adsk.eagle:package:22435/2"/>
 <part name="BZR_BTNHLD" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="" package3d_urn="urn:adsk.eagle:package:22458/2"/>
 <part name="BATTERY_BTNHLD" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="" package3d_urn="urn:adsk.eagle:package:22458/2"/>
 <part name="BZR_PIN1" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
 <part name="BZR_PIN2" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2"/>
+<part name="P+8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -13888,7 +13886,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <instance part="GND2" gate="1" x="30.48" y="88.9" rot="R90"/>
 <instance part="C2" gate="G$1" x="17.78" y="78.74" rot="R270"/>
 <instance part="Q1" gate="G$1" x="5.08" y="30.48" rot="MR180"/>
-<instance part="GND1" gate="1" x="-58.42" y="25.4" rot="R90"/>
 <instance part="U$1" gate="G$1" x="10.16" y="-15.24" rot="R90"/>
 <instance part="C3" gate="G$1" x="-33.02" y="66.04" rot="R270"/>
 <instance part="GND3" gate="1" x="-43.18" y="66.04" rot="R270"/>
@@ -13896,7 +13893,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <instance part="C4" gate="G$1" x="-33.02" y="43.18" rot="R270"/>
 <instance part="GND5" gate="1" x="-43.18" y="43.18" rot="R270"/>
 <instance part="R3" gate="G$1" x="17.78" y="58.42" rot="R180"/>
-<instance part="GND6" gate="1" x="27.94" y="58.42" rot="R90"/>
 <instance part="TONE" gate="A" x="78.74" y="109.22" rot="MR0"/>
 <instance part="PERIOD" gate="A" x="78.74" y="55.88" rot="MR0"/>
 <instance part="GND7" gate="1" x="81.28" y="48.26" rot="R90"/>
@@ -13934,13 +13930,13 @@ diameter 5 mm, grid 2.54 mm</description>
 <instance part="CHRGR2" gate="G$1" x="96.52" y="-114.3"/>
 <instance part="CHRGR3" gate="G$1" x="111.76" y="-96.52"/>
 <instance part="CHRGR4" gate="G$1" x="111.76" y="-114.3"/>
-<instance part="BUZZER" gate="G$1" x="-71.12" y="27.94" rot="R180"/>
 <instance part="BATTERY_BTN" gate="A" x="55.88" y="-137.16"/>
 <instance part="BATTERY" gate="G$1" x="99.06" y="-134.62"/>
 <instance part="BZR_BTNHLD" gate="A" x="-48.26" y="-2.54"/>
 <instance part="BATTERY_BTNHLD" gate="A" x="55.88" y="-152.4"/>
 <instance part="BZR_PIN1" gate="G$1" x="-66.04" y="-15.24"/>
 <instance part="BZR_PIN2" gate="G$1" x="-53.34" y="-15.24"/>
+<instance part="P+8" gate="VCC" x="27.94" y="58.42" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -13981,6 +13977,11 @@ diameter 5 mm, grid 2.54 mm</description>
 <pinref part="P+5" gate="VCC" pin="VCC"/>
 <pinref part="MS5611" gate="A" pin="1"/>
 <wire x1="106.68" y1="88.9" x2="119.38" y2="88.9" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="R3" gate="G$1" pin="1"/>
+<pinref part="P+8" gate="VCC" pin="VCC"/>
+<wire x1="22.86" y1="58.42" x2="25.4" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -14047,11 +14048,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <wire x1="-38.1" y1="43.18" x2="-40.64" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="GND6" gate="1" pin="GND"/>
-<pinref part="R3" gate="G$1" pin="1"/>
-<wire x1="25.4" y1="58.42" x2="22.86" y2="58.42" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="PERIOD" gate="A" pin="VSS"/>
 <wire x1="78.74" y1="48.26" x2="76.2" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="GND7" gate="1" pin="GND"/>
@@ -14102,9 +14098,9 @@ diameter 5 mm, grid 2.54 mm</description>
 <pinref part="GND16" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="BUZZER" gate="G$1" pin="1"/>
-<pinref part="GND1" gate="1" pin="GND"/>
-<wire x1="-68.58" y1="25.4" x2="-60.96" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="BZR_PIN2" gate="G$1" pin="1"/>
+<wire x1="-55.88" y1="-15.24" x2="-55.88" y2="-20.32" width="0.1524" layer="91"/>
+<label x="-55.88" y="-20.32" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -14398,18 +14394,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <label x="99.06" y="-45.72" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
-<net name="BZR_TRMNL" class="0">
-<segment>
-<pinref part="BZR_BTN" gate="A" pin="1"/>
-<wire x1="-50.8" y1="15.24" x2="-55.88" y2="15.24" width="0.1524" layer="91"/>
-<label x="-55.88" y="15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="BUZZER" gate="G$1" pin="2"/>
-<wire x1="-68.58" y1="27.94" x2="-55.88" y2="27.94" width="0.1524" layer="91"/>
-<label x="-55.88" y="27.94" size="1.778" layer="95" xref="yes"/>
-</segment>
-</net>
 <net name="BZR_PIN" class="0">
 <segment>
 <pinref part="TIMER556" gate="A" pin="Q"/>
@@ -14436,14 +14420,14 @@ diameter 5 mm, grid 2.54 mm</description>
 </net>
 <net name="BSTR_VIN" class="0">
 <segment>
-<pinref part="BSTR3" gate="G$1" pin="1"/>
-<wire x1="-5.08" y1="-96.52" x2="-5.08" y2="-88.9" width="0.1524" layer="91"/>
-<label x="-5.08" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
 <pinref part="FGAUGE1" gate="A" pin="1"/>
 <wire x1="20.32" y1="-99.06" x2="20.32" y2="-86.36" width="0.1524" layer="91"/>
 <label x="20.32" y="-86.36" size="1.778" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BSTR4" gate="G$1" pin="1"/>
+<wire x1="-15.24" y1="-96.52" x2="-15.24" y2="-88.9" width="0.1524" layer="91"/>
+<label x="-15.24" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="BATTERY_VOUT" class="0">
@@ -14481,11 +14465,6 @@ diameter 5 mm, grid 2.54 mm</description>
 <wire x1="86.36" y1="-93.98" x2="86.36" y2="-96.52" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="BSTR4" gate="G$1" pin="1"/>
-<wire x1="-15.24" y1="-96.52" x2="-15.24" y2="-88.9" width="0.1524" layer="91"/>
-<label x="-15.24" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
 <pinref part="FGAUGE1" gate="A" pin="2"/>
 <wire x1="17.78" y1="-99.06" x2="17.78" y2="-91.44" width="0.1524" layer="91"/>
 <label x="15.24" y="-91.44" size="1.778" layer="95" rot="R90" xref="yes"/>
@@ -14501,6 +14480,11 @@ diameter 5 mm, grid 2.54 mm</description>
 <pinref part="FGAUGE3" gate="G$1" pin="2"/>
 <wire x1="30.48" y1="-101.6" x2="38.1" y2="-101.6" width="0.1524" layer="91"/>
 <label x="38.1" y="-101.6" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BSTR3" gate="G$1" pin="1"/>
+<wire x1="-5.08" y1="-96.52" x2="-5.08" y2="-88.9" width="0.1524" layer="91"/>
+<label x="-5.08" y="-88.9" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="BATTERY_GND" class="0">
@@ -14526,6 +14510,18 @@ diameter 5 mm, grid 2.54 mm</description>
 <wire x1="30.48" y1="-104.14" x2="38.1" y2="-104.14" width="0.1524" layer="91"/>
 <wire x1="38.1" y1="-104.14" x2="38.1" y2="-106.68" width="0.1524" layer="91"/>
 <label x="38.1" y="-106.68" size="1.778" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="BZR_SIGNAL" class="0">
+<segment>
+<pinref part="BZR_PIN1" gate="G$1" pin="1"/>
+<wire x1="-68.58" y1="-15.24" x2="-68.58" y2="-20.32" width="0.1524" layer="91"/>
+<label x="-68.58" y="-20.32" size="1.778" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="BZR_BTN" gate="A" pin="1"/>
+<wire x1="-50.8" y1="15.24" x2="-55.88" y2="15.24" width="0.1524" layer="91"/>
+<label x="-55.88" y="15.24" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>

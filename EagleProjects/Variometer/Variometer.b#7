@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.05" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="mm" altunit="mm"/>
+<grid distance="0.0500000001" unitdist="mm" unit="mm" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="mm" altunit="mm"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -144,10 +144,13 @@
 <wire x1="100" y1="0" x2="99.95" y2="51.05" width="0" layer="20"/>
 <wire x1="99.95" y1="51.05" x2="-0.05" y2="51.05" width="0" layer="20"/>
 <wire x1="-0.05" y1="51.05" x2="0" y2="0" width="0" layer="20"/>
-<circle x="68.2" y="37.15" radius="11.976746875" width="0.1524" layer="1"/>
-<dimension x1="56.223359375" y1="37.099678125" x2="80.176640625" y2="37.200321875" x3="80.176640625" y3="37.200321875" textsize="1.778" layer="1" dtype="diameter"/>
-<dimension x1="68.2" y1="37.15" x2="73.2" y2="37.15" x3="70.7" y3="35.65" textsize="1.778" layer="1" dtype="diameter"/>
-<circle x="68.2" y="37.15" radius="5.015971875" width="0.1524" layer="1"/>
+<circle x="68.2" y="37.15" radius="11.976746875" width="0.1524" layer="21"/>
+<text x="80.95" y="46.5" size="1.778" layer="21">PG Vario v1.1</text>
+<text x="91.3" y="44.65" size="1.27" layer="21">AlChe</text>
+<hole x="1.9" y="49.05" drill="3"/>
+<hole x="1.9" y="2.25" drill="3"/>
+<hole x="98.05" y="1.9" drill="3"/>
+<hole x="98" y="49" drill="3"/>
 </plain>
 <libraries>
 <library name="pinhead" urn="urn:adsk.eagle:library:325">
@@ -1879,12 +1882,12 @@ design rules under a new name.</description>
 </designrules>
 <autorouter>
 <pass name="Default">
-<param name="RoutingGrid" value="50mil"/>
+<param name="RoutingGrid" value="0.5mm"/>
 <param name="AutoGrid" value="1"/>
-<param name="Efforts" value="0"/>
+<param name="Efforts" value="2"/>
 <param name="TopRouterVariant" value="1"/>
 <param name="tpViaShape" value="round"/>
-<param name="PrefDir.1" value="a"/>
+<param name="PrefDir.1" value="*"/>
 <param name="PrefDir.2" value="0"/>
 <param name="PrefDir.3" value="0"/>
 <param name="PrefDir.4" value="0"/>
@@ -1899,7 +1902,7 @@ design rules under a new name.</description>
 <param name="PrefDir.13" value="0"/>
 <param name="PrefDir.14" value="0"/>
 <param name="PrefDir.15" value="0"/>
-<param name="PrefDir.16" value="a"/>
+<param name="PrefDir.16" value="*"/>
 <param name="cfVia" value="8"/>
 <param name="cfNonPref" value="5"/>
 <param name="cfChangeDir" value="2"/>
@@ -1979,10 +1982,6 @@ design rules under a new name.</description>
 <element name="BSTR2" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="33.1" y="35.75"/>
 <element name="BSTR3" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="33.1" y="47.25"/>
 <element name="BSTR4" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="18.1" y="47.25"/>
-<element name="BUZZER" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X02" package3d_urn="urn:adsk.eagle:package:22435/2" value="" x="5.39" y="8.12" smashed="yes" rot="R180">
-<attribute name="NAME" x="8.6562" y="11.0412" size="1.27" layer="25" ratio="10" rot="R180"/>
-<attribute name="VALUE" x="7.93" y="11.295" size="1.27" layer="27" rot="R180"/>
-</element>
 <element name="BZR_BTN" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X03" package3d_urn="urn:adsk.eagle:package:22458/2" value="" x="2.6" y="16.13" rot="MR90"/>
 <element name="C1" library="resistor" library_urn="urn:adsk.eagle:library:348" package="C025-024X044" package3d_urn="urn:adsk.eagle:package:26149/1" value="10nF" x="33.52" y="30.523"/>
 <element name="C2" library="resistor" library_urn="urn:adsk.eagle:library:348" package="C050-025X075" package3d_urn="urn:adsk.eagle:package:26160/1" value="0.23uF" x="20.44" y="30.523"/>
@@ -2006,13 +2005,13 @@ design rules under a new name.</description>
 <element name="DIV3-R2" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="R0805" value="330R" x="61.76" y="30.45333125" rot="MR0"/>
 <element name="DIV4-R1" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="R0805" value="150R" x="68.58" y="42.0366625" rot="MR0"/>
 <element name="DIV4-R2" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="R0805" value="330R" x="75.36" y="42.0366625" rot="MR0"/>
-<element name="FGAUGE1" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X03" package3d_urn="urn:adsk.eagle:package:22458/2" value="" x="44.6" y="47.2"/>
+<element name="FGAUGE1" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X03" package3d_urn="urn:adsk.eagle:package:22458/2" value="" x="44.6" y="47.2" rot="R180"/>
 <element name="FGAUGE2" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X03" package3d_urn="urn:adsk.eagle:package:22458/2" value="" x="44.6" y="39.58"/>
 <element name="FGAUGE3" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X02" package3d_urn="urn:adsk.eagle:package:22435/2" value="" x="49.67" y="43.39" smashed="yes" rot="R90">
 <attribute name="NAME" x="51.4588" y="47.0262" size="1.27" layer="25" ratio="10" rot="R270"/>
 <attribute name="VALUE" x="52.845" y="40.85" size="1.27" layer="27" rot="R90"/>
 </element>
-<element name="MS5611" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X07" package3d_urn="urn:adsk.eagle:package:22477/2" value="GY-63" x="46.51" y="34.28"/>
+<element name="MS5611" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X07" package3d_urn="urn:adsk.eagle:package:22477/2" value="GY-63" x="46.51" y="34.28" rot="R180"/>
 <element name="PERIOD" library="Potentiometer" package="PDIP8_300MC" value="MCP41010-X/P" x="46.66" y="10.04" rot="R90"/>
 <element name="Q1" library="transistors" package="TO-92" value="2N7000" x="59.6" y="15.3" rot="R90"/>
 <element name="R1" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="R0805" value="1k" x="75.36" y="47.17" rot="MR0"/>
@@ -2022,15 +2021,22 @@ design rules under a new name.</description>
 <element name="TIMER556" library="linear" library_urn="urn:adsk.eagle:library:262" package="DIL14" package3d_urn="urn:adsk.eagle:package:16407/2" value="LM556N" x="70.8" y="10.81" rot="R270"/>
 <element name="TONE" library="Potentiometer" package="PDIP8_300MC" value="MCP41010-X/P" x="59.56" y="10.03" rot="R90"/>
 <element name="U$1" library="Arduino-clone" package="NANO" value="NANO" x="87.42" y="31.77" rot="R180"/>
-<element name="BATTERY" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X02" package3d_urn="urn:adsk.eagle:package:22435/2" value="" x="5.25" y="42.88"/>
+<element name="BATTERY" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X02" package3d_urn="urn:adsk.eagle:package:22435/2" value="" x="5.25" y="42.88" smashed="yes" rot="R180">
+<attribute name="NAME" x="9.0662" y="46.1512" size="1.27" layer="25" ratio="10" rot="R180"/>
+<attribute name="VALUE" x="7.79" y="46.055" size="1.27" layer="27" rot="R180"/>
+</element>
 <element name="BZR_BTNHLD" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X03" package3d_urn="urn:adsk.eagle:package:22458/2" value="" x="7.68" y="16.13" smashed="yes" rot="MR90">
 <attribute name="VALUE" x="4.505" y="12.32" size="1.27" layer="28" rot="MR90"/>
 </element>
 <element name="BATTERY_BTNHLD" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X03" package3d_urn="urn:adsk.eagle:package:22458/2" value="" x="7.73" y="33.91" smashed="yes" rot="MR90">
 <attribute name="VALUE" x="4.555" y="30.1" size="1.27" layer="28" rot="MR90"/>
 </element>
-<element name="BZR_PIN1" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="2.6" y="-13.2"/>
-<element name="BZR_PIN2" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="2.6" y="-28.45"/>
+<element name="BZR_PIN1" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="63.2" y="37.2" smashed="yes">
+<attribute name="VALUE" x="61.93" y="34.025" size="1.27" layer="27"/>
+</element>
+<element name="BZR_PIN2" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="1X01" package3d_urn="urn:adsk.eagle:package:22485/2" value="" x="73.2" y="37.2" smashed="yes">
+<attribute name="VALUE" x="71.93" y="34.025" size="1.27" layer="27"/>
+</element>
 </elements>
 <signals>
 <signal name="VCC">
@@ -2041,12 +2047,14 @@ design rules under a new name.</description>
 <contactref element="U$1" pad="5V"/>
 <contactref element="PERIOD" pad="8"/>
 <contactref element="MS5611" pad="1"/>
+<contactref element="R3" pad="1"/>
 <wire x1="76.36" y1="47.17" x2="97.58" y2="33.04" width="0" layer="19" extent="16-16"/>
+<wire x1="63.38" y1="47.17" x2="76.36" y2="47.17" width="0" layer="19" extent="16-16"/>
 <wire x1="74.61" y1="18.43" x2="97.58" y2="33.04" width="0" layer="19" extent="1-1"/>
 <wire x1="59.6" y1="16.57" x2="74.61" y2="18.43" width="0" layer="19" extent="1-1"/>
 <wire x1="51.94" y1="10.03" x2="59.6" y2="16.57" width="0" layer="19" extent="1-1"/>
 <wire x1="39.04" y1="10.04" x2="51.94" y2="10.03" width="0" layer="19" extent="1-1"/>
-<wire x1="38.89" y1="34.28" x2="39.04" y2="10.04" width="0" layer="19" extent="1-1"/>
+<wire x1="54.13" y1="34.28" x2="39.04" y2="10.04" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$1">
 <contactref element="TIMER556" pad="2"/>
@@ -2073,7 +2081,6 @@ design rules under a new name.</description>
 <contactref element="C3" pad="-"/>
 <contactref element="R2" pad="1"/>
 <contactref element="C4" pad="2"/>
-<contactref element="R3" pad="1"/>
 <contactref element="PERIOD" pad="4"/>
 <contactref element="U$1" pad="GND"/>
 <contactref element="TONE" pad="4"/>
@@ -2084,15 +2091,15 @@ design rules under a new name.</description>
 <contactref element="DIV3-R2" pad="1"/>
 <contactref element="DIV4-R2" pad="1"/>
 <contactref element="BSTR2" pad="1"/>
-<contactref element="BUZZER" pad="1"/>
+<contactref element="BZR_PIN2" pad="1"/>
 <wire x1="76.36" y1="42.0366625" x2="97.58" y2="38.12" width="0" layer="19" extent="16-16"/>
-<wire x1="69.58" y1="47.17" x2="76.36" y2="42.0366625" width="0" layer="19" extent="16-16"/>
-<wire x1="63.38" y1="47.17" x2="69.58" y2="47.17" width="0" layer="19" extent="16-16"/>
-<wire x1="76.16" y1="30.45333125" x2="76.36" y2="42.0366625" width="0" layer="19" extent="16-16"/>
+<wire x1="73.2" y1="37.2" x2="76.36" y2="42.0366625" width="0" layer="19" extent="16-16"/>
+<wire x1="76.16" y1="30.45333125" x2="73.2" y2="37.2" width="0" layer="19" extent="16-16"/>
 <wire x1="69.46" y1="30.45333125" x2="76.16" y2="30.45333125" width="0" layer="19" extent="16-16"/>
 <wire x1="62.76" y1="30.45333125" x2="69.46" y2="30.45333125" width="0" layer="19" extent="16-16"/>
-<wire x1="41.43" y1="34.28" x2="62.76" y2="30.45333125" width="0" layer="19" extent="16-16"/>
-<wire x1="33.1" y1="35.75" x2="41.43" y2="34.28" width="0" layer="19" extent="1-1"/>
+<wire x1="69.58" y1="47.17" x2="76.36" y2="42.0366625" width="0" layer="19" extent="16-16"/>
+<wire x1="51.59" y1="34.28" x2="62.76" y2="30.45333125" width="0" layer="19" extent="16-16"/>
+<wire x1="33.1" y1="35.75" x2="51.59" y2="34.28" width="0" layer="19" extent="1-1"/>
 <wire x1="32.25" y1="30.523" x2="33.1" y2="35.75" width="0" layer="19" extent="1-1"/>
 <wire x1="29.06" y1="30.523" x2="32.25" y2="30.523" width="0" layer="19" extent="1-1"/>
 <wire x1="17.9" y1="30.523" x2="29.06" y2="30.523" width="0" layer="19" extent="1-1"/>
@@ -2101,7 +2108,6 @@ design rules under a new name.</description>
 <wire x1="59.56" y1="2.41" x2="46.66" y2="2.42" width="0" layer="19" extent="1-1"/>
 <wire x1="66.99" y1="3.19" x2="59.56" y2="2.41" width="0" layer="19" extent="1-1"/>
 <wire x1="13.02" y1="11.08" x2="17.9" y2="30.523" width="0" layer="19" extent="1-1"/>
-<wire x1="6.66" y1="8.12" x2="13.02" y2="11.08" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$2">
 <contactref element="TIMER556" pad="3"/>
@@ -2164,8 +2170,8 @@ design rules under a new name.</description>
 <contactref element="U$1" pad="A5"/>
 <contactref element="MS5611" pad="3"/>
 <contactref element="FGAUGE2" pad="2"/>
-<wire x1="43.97" y1="34.28" x2="97.58" y2="25.42" width="0" layer="19" extent="1-1"/>
-<wire x1="44.6" y1="39.58" x2="43.97" y2="34.28" width="0" layer="19" extent="1-1"/>
+<wire x1="49.05" y1="34.28" x2="97.58" y2="25.42" width="0" layer="19" extent="1-1"/>
+<wire x1="44.6" y1="39.58" x2="49.05" y2="34.28" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SDA">
 <contactref element="U$1" pad="A4"/>
@@ -2239,11 +2245,6 @@ design rules under a new name.</description>
 <wire x1="69.58" y1="42.0366625" x2="74.36" y2="42.0366625" width="0" layer="19" extent="16-16"/>
 <wire x1="13.02" y1="23.78" x2="69.58" y2="42.0366625" width="0" layer="19" extent="16-16"/>
 </signal>
-<signal name="BZR_TRMNL">
-<contactref element="BZR_BTN" pad="1"/>
-<contactref element="BUZZER" pad="2"/>
-<wire x1="4.12" y1="8.12" x2="2.6" y2="13.59" width="0" layer="19" extent="1-1"/>
-</signal>
 <signal name="BZR_PIN">
 <contactref element="TIMER556" pad="5"/>
 <contactref element="BZR_BTN" pad="2"/>
@@ -2255,14 +2256,14 @@ design rules under a new name.</description>
 <wire x1="18.1" y1="35.75" x2="97.58" y2="40.66" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BSTR_VIN">
-<contactref element="BSTR3" pad="1"/>
 <contactref element="FGAUGE1" pad="1"/>
-<wire x1="33.1" y1="47.25" x2="42.06" y2="47.2" width="0" layer="19" extent="1-1"/>
+<contactref element="BSTR4" pad="1"/>
+<wire x1="18.1" y1="47.25" x2="47.14" y2="47.2" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BATTERY_VOUT">
 <contactref element="CHRGR2" pad="1"/>
 <contactref element="BATTERY" pad="2"/>
-<wire x1="20.84" y1="23.55" x2="6.52" y2="42.88" width="0" layer="19" extent="1-1"/>
+<wire x1="20.84" y1="23.55" x2="3.98" y2="42.88" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="CHARGER_VOUT">
 <contactref element="CHRGR2" pad="2"/>
@@ -2271,24 +2272,29 @@ design rules under a new name.</description>
 </signal>
 <signal name="CHARGER_GND">
 <contactref element="CHRGR1" pad="1"/>
-<contactref element="BSTR4" pad="1"/>
 <contactref element="FGAUGE1" pad="2"/>
 <contactref element="FGAUGE2" pad="1"/>
 <contactref element="FGAUGE3" pad="2"/>
+<contactref element="BSTR3" pad="1"/>
 <wire x1="44.6" y1="47.2" x2="49.67" y2="44.66" width="0" layer="19" extent="1-1"/>
 <wire x1="42.06" y1="39.58" x2="44.6" y2="47.2" width="0" layer="19" extent="1-1"/>
+<wire x1="33.1" y1="47.25" x2="44.6" y2="47.2" width="0" layer="19" extent="1-1"/>
 <wire x1="31.8" y1="23.55" x2="42.06" y2="39.58" width="0" layer="19" extent="1-1"/>
-<wire x1="18.1" y1="47.25" x2="42.06" y2="39.58" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BATTERY_GND">
 <contactref element="CHRGR1" pad="2"/>
 <contactref element="BATTERY" pad="1"/>
-<wire x1="3.98" y1="42.88" x2="29.26" y2="23.55" width="0" layer="19" extent="1-1"/>
+<wire x1="6.52" y1="42.88" x2="29.26" y2="23.55" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="BATTERY_BTN_VOUT">
 <contactref element="BATTERY_BTN" pad="1"/>
 <contactref element="FGAUGE3" pad="1"/>
 <wire x1="2.65" y1="31.37" x2="49.67" y2="42.12" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="BZR_SIGNAL">
+<contactref element="BZR_PIN1" pad="1"/>
+<contactref element="BZR_BTN" pad="1"/>
+<wire x1="2.6" y1="13.59" x2="63.2" y2="37.2" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>
